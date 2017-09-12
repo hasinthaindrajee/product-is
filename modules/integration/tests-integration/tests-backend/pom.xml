@@ -49,7 +49,7 @@
                         <property>
                             <name>carbon.zip</name>
                             <value>
-                                ${basedir}/../../../distribution/target/wso2is-${project.version}.zip
+                                ${settings.localRepository}/org/wso2/is/wso2is/${project.version}/wso2is-${project.version}.zip
                             </value>
                         </property>
                         <property>

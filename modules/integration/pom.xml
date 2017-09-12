@@ -28,10 +28,7 @@
     <name>Identity Server Integration Tests</name>
     <packaging>pom</packaging>
     <modules>
-        <module>tests-common</module>
         <module>tests-integration</module>
-        <!--<module>tests-ui-integration</module>-->
-        <!--<module>tests</module>-->
     </modules>
     <build>
         <plugins>
@@ -42,7 +39,7 @@
                         <systemProperties>
                         <maven.test.haltafterfailure>false</maven.test.haltafterfailure>
                         <carbon.zip>
-                            ${basedir}/../distribution/target/wso2is-${project.version}.zip
+                            ${settings.localRepository}/org/wso2/is/wso2is/${project.version}/wso2is-${project.version}.zip
                         </carbon.zip>
                         <sec.verifier.dir>
                             ${basedir}/target/security-verifier/
