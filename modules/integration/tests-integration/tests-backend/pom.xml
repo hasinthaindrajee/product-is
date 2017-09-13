@@ -17,15 +17,58 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>org.wso2.is</groupId>
-        <artifactId>identity-integration-tests</artifactId>
-        <version>5.4.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <artifactId>identity-server-parent</artifactId>
+        <version>5.3.0</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
+    <version>1.0.0-SNAPSHOT</version>
     <name>Identity Test Back-end Module</name>
-    <artifactId>org.wso2.carbon.identity.integration.backend.test</artifactId>
+    <artifactId>org.wso2.carbon.identity.connector.integration.backend.test</artifactId>
     <packaging>jar</packaging>
+
+    <repositories>
+        <!-- Before adding ANYTHING in here, please start a discussion on the dev list.
+	Ideally the Axis2 build should only use Maven central (which is available
+	by default) and nothing else. We had troubles with other repositories in
+	the past. Therefore configuring additional repositories here should be
+	considered very carefully. -->
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>wso2.releases</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+
+        <repository>
+            <id>wso2.snapshots</id>
+            <name>WSO2 Snapshot Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+
+    </repositories>
 
     <build>
         <plugins>
@@ -49,7 +92,7 @@
                         <property>
                             <name>carbon.zip</name>
                             <value>
-                                ${settings.localRepository}/org/wso2/is/wso2is/${project.version}/wso2is-${project.version}.zip
+                                ${settings.localRepository}/org/wso2/is/wso2is/5.4.0-SNAPSHOT/wso2is-5.4.0-SNAPSHOT.zip
                             </value>
                         </property>
                         <property>
@@ -123,7 +166,7 @@
                                 <artifactItem>
                                     <groupId>org.wso2.is</groupId>
                                     <artifactId>wso2is</artifactId>
-                                    <version>${project.version}</version>
+                                    <version>5.4.0-SNAPSHOT</version>
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${basedir}/target/tobeCopied/</outputDirectory>
@@ -146,33 +189,7 @@
                             <stripVersion>true</stripVersion>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy-playground2</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/test-classes/samples</outputDirectory>
-                            <includeTypes>war</includeTypes>
-                            <includeArtifactIds>playground2</includeArtifactIds>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-passivests</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/test-classes/samples
-                            </outputDirectory>
-                            <includeTypes>war</includeTypes>
-                            <includeArtifactIds>PassiveSTSSampleApp</includeArtifactIds>
-                            <stripVersion>true</stripVersion>
-                        </configuration>
-                    </execution>
+
                     <execution>
                         <id>unpack-travelocity-openid</id>
                         <phase>compile</phase>
@@ -193,46 +210,6 @@
                             </artifactItems>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>unpack-playground2</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.wso2.is</groupId>
-                                    <artifactId>playground2</artifactId>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>
-                                        ${basedir}/target/test-classes/samples/playground2
-                                    </outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack-passivests</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.wso2.is</groupId>
-                                    <artifactId>PassiveSTSSampleApp</artifactId>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>
-                                        ${basedir}/target/test-classes/samples/PassiveSTSSampleApp
-                                    </outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -245,72 +222,6 @@
                         <configuration>
                             <tasks>
                                 <ant antfile="src/test/resources/artifacts/IS/org.wso2.sample.is.sso.agent/travelocity-app-build.xml" target="clear-slf4j-libs" />
-                                <ant antfile="src/test/resources/artifacts/IS/passivests/sts-app-build.xml" target="clear-slf4j-libs" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>packaging-war-artifacts-openid</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="src/test/resources/artifacts/IS/openId/openid-app-build.xml" target="openid-smartconsumerwithclaims" />
-                                <ant antfile="src/test/resources/artifacts/IS/openId/openid-app-build.xml" target="openid-smartconsumerwithoutclaims" />
-                                <ant antfile="src/test/resources/artifacts/IS/openId/openid-app-build.xml" target="openid-dumbconsumerwithclaims" />
-                                <ant antfile="src/test/resources/artifacts/IS/openId/openid-app-build.xml" target="openid-dumbconsumerwithoutclaims" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>packaging-war-artifacts-oauth</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="src/test/resources/artifacts/IS/oauth/oauth-app-build.xml" target="default" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>packaging-war-artifacts-oidc</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="src/test/resources/artifacts/IS/oidc/oidc-sso-app-build.xml" target="playground.appone-app-build" />
-                                <ant antfile="src/test/resources/artifacts/IS/oidc/oidc-sso-app-build.xml" target="playground.apptwo-app-build" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>packaging-war-artifacts-passivests</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="src/test/resources/artifacts/IS/passivests/sts-app-build.xml" target="default" />
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>packaging-war-artifacts-saml</id>
-                        <phase>process-test-resources</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="src/test/resources/artifacts/IS/saml/saml-app-build.xml" target="saml-tenant-signingdisabled" />
-                                <ant antfile="src/test/resources/artifacts/IS/saml/registrymount/registry-app-build.xml" target="saml-tenant-registrymount" />
                             </tasks>
                         </configuration>
                         <goals>
@@ -395,27 +306,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy-resources-mar</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/src/test/resources/client/modules
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>
-                                        ${basedir}/target/tobeCopied/wso2is-${project.version}/repository/deployment/client/modules
-                                    </directory>
-                                    <includes>
-                                        <include>**/*.mar</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -449,10 +339,12 @@
         <dependency>
             <groupId>org.wso2.is</groupId>
             <artifactId>org.wso2.identity.integration.common.clients</artifactId>
+            <version>${product.is.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.is</groupId>
             <artifactId>org.wso2.identity.integration.common.utils</artifactId>
+            <version>${product.is.version}</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.automation</groupId>
@@ -513,10 +405,6 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.user.store.configuration.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.user.mgt.stub</artifactId>
         </dependency>
         <dependency>
@@ -524,20 +412,8 @@
             <artifactId>org.wso2.carbon.identity.application.mgt.stub</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.idp.mgt.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.mgt.stub</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
             <artifactId>org.wso2.carbon.identity.oauth.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.entitlement.stub</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.automationutils</groupId>
@@ -545,32 +421,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.user.ws</groupId>
-            <artifactId>org.wso2.carbon.um.ws.api.stub</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon.identity.inbound.auth.saml2</groupId>
             <artifactId>org.wso2.carbon.identity.sso.saml.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.claim.mgt.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.claim.metadata.mgt.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.inbound.auth.openid</groupId>
-            <artifactId>org.wso2.carbon.identity.provider.openid.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.inbound.provisioning.scim</groupId>
-            <artifactId>org.wso2.carbon.identity.scim.common.stub</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.association.account</groupId>
-            <artifactId>org.wso2.carbon.identity.user.account.association.stub</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.automation</groupId>
@@ -593,25 +445,8 @@
         <dependency>
             <groupId>org.wso2.is</groupId>
             <artifactId>org.wso2.sample.is.sso.agent</artifactId>
-            <version>${project.version}</version>
+            <version>${product.is.version}</version>
             <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.is</groupId>
-            <artifactId>playground2</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.is</groupId>
-            <artifactId>PassiveSTSSampleApp</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
@@ -621,20 +456,8 @@
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.analytics-common</groupId>
-            <artifactId>org.wso2.carbon.databridge.commons</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.analytics-common</groupId>
-            <artifactId>org.wso2.carbon.databridge.core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.analytics-common</groupId>
-            <artifactId>org.wso2.carbon.databridge.receiver.thrift</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
+    <properties>
+        <product.is.version>5.3.0</product.is.version>
+    </properties>
 </project>
