@@ -25,7 +25,10 @@ import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.ProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -35,9 +38,20 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.testng.Assert;
-import org.testng.annotations.*;
-import org.wso2.carbon.identity.application.common.model.xsd.*;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import org.wso2.carbon.identity.application.common.model.idp.xsd.FederatedAuthenticatorConfig;
+import org.wso2.carbon.identity.application.common.model.idp.xsd.IdentityProvider;
+import org.wso2.carbon.identity.application.common.model.xsd.AuthenticationStep;
+import org.wso2.carbon.identity.application.common.model.xsd.InboundAuthenticationConfig;
+import org.wso2.carbon.identity.application.common.model.xsd.InboundAuthenticationRequestConfig;
+import org.wso2.carbon.identity.application.common.model.xsd.LocalAndOutboundAuthenticationConfig;
+import org.wso2.carbon.identity.application.common.model.xsd.LocalAuthenticatorConfig;
+import org.wso2.carbon.identity.application.common.model.xsd.Property;
+import org.wso2.carbon.identity.application.common.model.xsd.ServiceProvider;
 import org.wso2.carbon.um.ws.api.stub.ClaimValue;
+import org.wso2.identity.integration.common.clients.Idp.IdentityProviderMgtServiceClient;
 import org.wso2.identity.integration.common.clients.application.mgt.ApplicationManagementServiceClient;
 import org.wso2.identity.integration.common.clients.usermgt.remote.RemoteUserStoreManagerServiceClient;
 import org.wso2.identity.integration.common.utils.ISIntegrationTest;
@@ -86,13 +100,15 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     private RemoteUserStoreManagerServiceClient remoteUSMServiceClient;
     private DefaultHttpClient httpClient;
     private Tomcat tomcatServer;
+    private IdentityProviderMgtServiceClient identityProviderMgtServiceClient;
+    ServiceProvider serviceProvider;
 
     private boolean isSAMLReturned;
 
     @BeforeClass(alwaysRun = true)
     public void testInit() throws Exception {
         super.init();
-
+        identityProviderMgtServiceClient = new IdentityProviderMgtServiceClient(sessionCookie, backendURL);
         ConfigurationContext configContext = ConfigurationContextFactory
                 .createConfigurationContextFromFileSystem(null
                         , null);
@@ -137,6 +153,14 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
 
         createUser();
         createApplication();
+
+
+        IdentityProvider identityProvider = new IdentityProvider();
+        identityProvider.setIdentityProviderName("SMSOTP");
+        buildSAMLAuthenticationConfiguration(identityProvider);
+
+        identityProviderMgtServiceClient.addIdP(identityProvider);
+        //updateSPWithSteps();
 
         //Starting tomcat
         log.info("Starting Tomcat");
@@ -270,7 +294,7 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     }
 
     private void createApplication() throws Exception {
-        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider = new ServiceProvider();
         serviceProvider.setApplicationName(APPLICATION_NAME);
         serviceProvider.setDescription("This is a test Service Provider");
         applicationManagementServiceClient.createApplication(serviceProvider);
@@ -339,5 +363,77 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         claimValues[2] = email;
 
         return claimValues;
+    }
+
+    private static void buildSAMLAuthenticationConfiguration(IdentityProvider fedIdp) {
+
+        FederatedAuthenticatorConfig saml2SSOAuthnConfig =
+                new FederatedAuthenticatorConfig();
+        saml2SSOAuthnConfig.setName("SMSOTP");
+        saml2SSOAuthnConfig.setDisplayName("SMSOTP");
+        saml2SSOAuthnConfig.setEnabled(true);
+        org.wso2.carbon.identity.application.common.model.idp.xsd.Property[] properties = new org.wso2.carbon
+                .identity.application.common.model.idp.xsd.Property[4];
+
+        org.wso2.carbon.identity.application.common.model.idp.xsd.Property property = new org.wso2.carbon.identity
+                .application.common.model.idp.xsd.Property();
+
+        property.setName("sms_url");
+        property.setValue("https://localhost:8080/something");
+        properties[0] = property;
+
+        property = new org.wso2.carbon.identity.application.common.model.idp.xsd.Property();
+        property.setName("http_method");
+        property.setValue("POST");
+        properties[1] = property;
+
+
+        property = new org.wso2.carbon.identity.application.common.model.idp.xsd.Property();
+        property.setName("headers");
+        property.setValue("HEADERS");
+        properties[2] = property;
+
+
+        property = new org.wso2.carbon.identity.application.common.model.idp.xsd.Property();
+        property.setName("payload");
+        property.setValue("PAYLOAD");
+        properties[3] = property;
+
+        saml2SSOAuthnConfig.setProperties(properties);
+
+        fedIdp.setFederatedAuthenticatorConfigs(new FederatedAuthenticatorConfig[]{saml2SSOAuthnConfig});
+
+    }
+
+    private void updateSPWithSteps() {
+        LocalAndOutboundAuthenticationConfig localAndOutboundAuthenticationConfig = new
+                LocalAndOutboundAuthenticationConfig();
+        org.wso2.carbon.identity.application.common.model.xsd.IdentityProvider[] fed = new org.wso2.carbon.identity
+                .application.common.model.xsd.IdentityProvider[1];
+
+
+        AuthenticationStep authenticationStep1 = new AuthenticationStep();
+
+        fed[0] = new org.wso2.carbon.identity.application.common.model.xsd.IdentityProvider();
+        fed[0].setDisplayName("SMSOTP");
+        fed[0].setIdentityProviderName("SMSOTP");
+        authenticationStep1.setFederatedIdentityProviders(fed);
+
+
+        AuthenticationStep authenticationStep2 = new AuthenticationStep();
+        LocalAuthenticatorConfig[] localAuthenticatorConfig = new LocalAuthenticatorConfig[1];
+        LocalAuthenticatorConfig localAuthenticatorConfig1 = new LocalAuthenticatorConfig();
+        localAuthenticatorConfig1.setName("basic");
+        localAuthenticatorConfig1.setDisplayName("basic");
+        authenticationStep2.setLocalAuthenticatorConfigs(localAuthenticatorConfig);
+
+        localAndOutboundAuthenticationConfig.setAuthenticationSteps(new AuthenticationStep[]{authenticationStep1, authenticationStep2});
+
+        try {
+            applicationManagementServiceClient.updateApplicationData(serviceProvider);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

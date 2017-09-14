@@ -27,6 +27,56 @@
     <artifactId>org.wso2.carbon.identity.connector.integration.backend.test</artifactId>
     <packaging>jar</packaging>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>wso2-maven2-repository</id>
+            <url>http://dist.wso2.org/maven2</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>wso2.releases</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>wso2.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </pluginRepository>
+
+        <pluginRepository>
+            <name>soapui nexus</name>
+            <id>smartbear-sweden-plugin-repository</id>
+            <url>http://www.soapui.org/repository/maven2/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+
     <repositories>
         <!-- Before adding ANYTHING in here, please start a discussion on the dev list.
 	Ideally the Axis2 build should only use Maven central (which is available
@@ -73,12 +123,83 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.googlecode.maven-download-plugin</groupId>
+                <artifactId>download-maven-plugin</artifactId>
+                <version>1.3.0</version>
+                <executions>
+                    <execution>
+                        <!-- the wget goal actually binds itself to this phase by default -->
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>http://atuwa.private.wso2.com/WSO2-Products/identity-server/5.3.0/wso2is-5.3.0.zip</url>
+                            <outputFileName>wso2is-5.3.0.zip</outputFileName>
+                            <!-- default target location, just to demonstrate the parameter -->
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.smartbear.soapui</groupId>
+                <artifactId>soapui-maven-plugin</artifactId>
+                <version>5.2.1</version>
+                <configuration>
+                    <projectFile>${basedir}/src/test/resources/services/REST-Project-1-soapui-project.xml</projectFile>
+                    <projectProperties>
+                        <value>message=Hello World!</value>
+                    </projectProperties>
+                    <noBlock>true</noBlock>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>soapui-test</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>mock</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.reflections</groupId>
+                        <artifactId>reflections</artifactId>
+                        <version>0.9.9-RC1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi-ooxml</artifactId>
+                        <version>3.10-FINAL</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>eviware</groupId>-->
+                <!--<artifactId>maven-soapui-plugin</artifactId>-->
+                <!--<version>4.5.1</version>-->
+                <!--<configuration>-->
+                    <!--<projectFile>${basedir}/src/test/resources/services/REST-Project-1-soapui-project.xml</projectFile>-->
+                    <!--<noBlock>true</noBlock>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>soapui-test</id>-->
+                        <!--<phase>process-resources</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>mock</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+            <!--</plugin>-->
+            <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <inherited>false</inherited>
                 <version>2.12.4</version>
                 <configuration>
-                    <!--<argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006</argLine>-->
-                    <argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -Dorg.apache.jasper.compiler.disablejsr199=true</argLine>
+                    <argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5006</argLine>
+                    <!--<argLine>-Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -Dorg.apache.jasper.compiler.disablejsr199=true</argLine>-->
                     <suiteXmlFiles>
                         <!--<suiteXmlFile>src/test/resources/testng-server-mgt.xml</suiteXmlFile>-->
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
@@ -92,7 +213,7 @@
                         <property>
                             <name>carbon.zip</name>
                             <value>
-                                ${settings.localRepository}/org/wso2/is/wso2is/5.4.0-SNAPSHOT/wso2is-5.4.0-SNAPSHOT.zip
+                                ${project.build.directory}/wso2is-5.3.0.zip
                             </value>
                         </property>
                         <property>
@@ -155,26 +276,26 @@
                         </configuration>
                     </execution>
 
-                    <execution>
-                        <id>unpack-mar-jks</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.wso2.is</groupId>
-                                    <artifactId>wso2is</artifactId>
-                                    <version>5.4.0-SNAPSHOT</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${basedir}/target/tobeCopied/</outputDirectory>
-                                    <includes>**/*.jks,**/*.mar,**/axis2_client.xml</includes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
+                    <!--<execution>-->
+                        <!--<id>unpack-mar-jks</id>-->
+                        <!--<phase>compile</phase>-->
+                        <!--<goals>-->
+                            <!--<goal>unpack</goal>-->
+                        <!--</goals>-->
+                        <!--<configuration>-->
+                            <!--<artifactItems>-->
+                                <!--<artifactItem>-->
+                                    <!--<groupId>org.wso2.is</groupId>-->
+                                    <!--<artifactId>wso2is</artifactId>-->
+                                    <!--<version>5.3.0-SNAPSHOT</version>-->
+                                    <!--<type>zip</type>-->
+                                    <!--<overWrite>true</overWrite>-->
+                                    <!--<outputDirectory>${basedir}/target/tobeCopied/</outputDirectory>-->
+                                    <!--<includes>**/*.jks,**/*.mar,**/axis2_client.xml</includes>-->
+                                <!--</artifactItem>-->
+                            <!--</artifactItems>-->
+                        <!--</configuration>-->
+                    <!--</execution>-->
 
                     <execution>
                         <id>copy-travelocity</id>
