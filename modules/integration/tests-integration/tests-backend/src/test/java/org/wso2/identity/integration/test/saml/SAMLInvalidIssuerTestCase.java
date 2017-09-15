@@ -23,19 +23,17 @@ import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardHost;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.ProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.DefaultRedirectHandler;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -50,18 +48,21 @@ import org.wso2.carbon.identity.application.common.model.xsd.LocalAndOutboundAut
 import org.wso2.carbon.identity.application.common.model.xsd.LocalAuthenticatorConfig;
 import org.wso2.carbon.identity.application.common.model.xsd.Property;
 import org.wso2.carbon.identity.application.common.model.xsd.ServiceProvider;
+import org.wso2.carbon.identity.sso.saml.stub.types.SAMLSSOServiceProviderDTO;
+import org.wso2.carbon.integration.common.utils.mgt.ServerConfigurationManager;
 import org.wso2.carbon.um.ws.api.stub.ClaimValue;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.identity.integration.common.clients.Idp.IdentityProviderMgtServiceClient;
 import org.wso2.identity.integration.common.clients.application.mgt.ApplicationManagementServiceClient;
+import org.wso2.identity.integration.common.clients.sso.saml.SAMLSSOConfigServiceClient;
 import org.wso2.identity.integration.common.clients.usermgt.remote.RemoteUserStoreManagerServiceClient;
 import org.wso2.identity.integration.common.utils.ISIntegrationTest;
+import org.wso2.identity.integration.test.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,42 +72,47 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
 
     // SAML Application attributes
     private static final String USER_AGENT = "Apache-HttpClient/4.2.5 (java 1.5)";
-    private static final String ISSUER_NAME = "dummy.com";
+    private static final String ISSUER_NAME = "travelocity.com";
     private static final String APPLICATION_NAME = "SAML-SSO-TestApplication";
     private static final String INBOUND_AUTH_TYPE = "samlsso";
     private static final String ATTRIBUTE_CS_INDEX_VALUE = "1239245949";
     private static final String ATTRIBUTE_CS_INDEX_NAME = "attrConsumServiceIndex";
+    private static int TOMCAT_PORT = 8490;
+    //private static int TOMCAT_PORT = 8080;
 
     // User Attributes
     private static final String USERNAME = "testUser";
     private static final String PASSWORD = "testUser";
     private static final String EMAIL = "testUser@wso2.com";
     private static final String NICKNAME = "testUserNick";
+    private static final String MOBILE_NO = "+9473123456";
 
-    private static final String ACS_URL = "http://localhost:8490/travelocity.com/home.jsp";
+    private static final String ACS_URL = "http://localhost:" + TOMCAT_PORT + "/travelocity.com/home.jsp";
     private static final String COMMON_AUTH_URL = "https://localhost:9853/commonauth";
     private static final String SAML_SSO_LOGIN_URL =
-            "http://localhost:8490/travelocity.com/samlsso?SAML2.HTTPBinding=HTTP-Redirect";
-    private static final String SAML_ERROR_NOTIFICATION_PATH = "/authenticationendpoint/samlsso_notification.do";
+            "http://localhost:" + TOMCAT_PORT + "/travelocity.com/samlsso?SAML2.HTTPBinding=HTTP-Redirect";
 
     //Claim Uris
     private static final String firstNameClaimURI = "http://wso2.org/claims/givenname";
     private static final String lastNameClaimURI = "http://wso2.org/claims/lastname";
     private static final String emailClaimURI = "http://wso2.org/claims/emailaddress";
+    private static final String mobileClaimURI = "http://wso2.org/claims/mobile";
 
     private static final String profileName = "default";
 
     private ApplicationManagementServiceClient applicationManagementServiceClient;
     private RemoteUserStoreManagerServiceClient remoteUSMServiceClient;
-    private DefaultHttpClient httpClient;
+    private SAMLSSOConfigServiceClient ssoConfigServiceClient;
+    private DefaultHttpClient httpClient = new DefaultHttpClient();
     private Tomcat tomcatServer;
     private IdentityProviderMgtServiceClient identityProviderMgtServiceClient;
     ServiceProvider serviceProvider;
-
-    private boolean isSAMLReturned;
+    private ServerConfigurationManager serverConfigurationManager;
 
     @BeforeClass(alwaysRun = true)
     public void testInit() throws Exception {
+        super.init();
+        changeISConfiguration();
         super.init();
         identityProviderMgtServiceClient = new IdentityProviderMgtServiceClient(sessionCookie, backendURL);
         ConfigurationContext configContext = ConfigurationContextFactory
@@ -115,60 +121,22 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         applicationManagementServiceClient =
                 new ApplicationManagementServiceClient(sessionCookie, backendURL, configContext);
         remoteUSMServiceClient = new RemoteUserStoreManagerServiceClient(backendURL, sessionCookie);
-
-        isSAMLReturned = false;
-
-        httpClient = new DefaultHttpClient();
-        httpClient.setRedirectHandler(new DefaultRedirectHandler() {
-            @Override
-            public URI getLocationURI(HttpResponse response,
-                                      HttpContext context) throws ProtocolException {
-
-                if (response == null) {
-                    throw new IllegalArgumentException("HTTP Response should not be null");
-                }
-                //get the location header to find out where to redirect to
-                Header locationHeader = response.getFirstHeader("Location");
-                if (locationHeader == null) {
-                    // got a redirect resp, but no location header
-                    throw new ProtocolException(
-                            "Received redirect resp " + response.getStatusLine()
-                            + " but no location header");
-                }
-
-                URL url = null;
-                try {
-                    url = new URL(locationHeader.getValue());
-                    if (SAML_ERROR_NOTIFICATION_PATH.equals(url.getPath()) &&
-                        url.getQuery().contains("SAMLResponse")) {
-                        isSAMLReturned = true;
-                    }
-                } catch (MalformedURLException e) {
-                    throw new ProtocolException("Invalid redirect URI: " + locationHeader.getValue(), e);
-                }
-
-                return super.getLocationURI(response, context);
-            }
-        });
+        ssoConfigServiceClient =
+                new SAMLSSOConfigServiceClient(backendURL, sessionCookie);
 
         createUser();
         createApplication();
 
-
+        ssoConfigServiceClient
+                .addServiceProvider(createSsoServiceProviderDTO());
         IdentityProvider identityProvider = new IdentityProvider();
         identityProvider.setIdentityProviderName("SMSOTP");
         buildSAMLAuthenticationConfiguration(identityProvider);
-
         identityProviderMgtServiceClient.addIdP(identityProvider);
-        //updateSPWithSteps();
-
+        updateSPWithSteps();
         //Starting tomcat
         log.info("Starting Tomcat");
         tomcatServer = getTomcat();
-
-        //TODO: Uncomment below once the tomcat dependency issue is resolved
-//        URL resourceUrl = getClass()
-//                .getResource(File.separator + "samples" + File.separator + "org.wso2.sample.is .sso.agent.war");
         URL resourceUrl = getClass().getResource(File.separator + "samples" + File.separator + "travelocity.com.war");
         startTomcat(tomcatServer, "/travelocity.com", resourceUrl.getPath());
 
@@ -178,7 +146,6 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     public void testClear() throws Exception {
         deleteUser();
         deleteApplication();
-
         applicationManagementServiceClient = null;
         remoteUSMServiceClient = null;
         httpClient = null;
@@ -188,21 +155,39 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     }
 
     @Test(alwaysRun = true, description = "Testing SAML SSO login", groups = "wso2.is",
-          priority = 1)
-    public void testSAMLSSOLogin() {
+            priority = 1)
+    public void testTOTPPage() {
         try {
             HttpResponse response;
-
             response = sendGetRequest(SAML_SSO_LOGIN_URL);
-
             String sessionKey = extractDataFromResponse(response, "name=\"sessionDataKey\"", 1);
-            response = sendPOSTMessage(sessionKey);
+            response = sendCredentials(sessionKey);
+            Assert.assertTrue(response.getHeaders("LOCATION")[0].getValue().contains("https://localhost:9853/smsotpauthenticationendpoint/smsotp.jsp"));
             EntityUtils.consume(response.getEntity());
+        } catch (Exception e) {
+            Assert.fail("SAML SSO Login test failed.", e);
+        }
+    }
 
-            sendRedirectRequest(response);
-
-            Assert.assertTrue(isSAMLReturned,
-                              "Sending SAML response to the samlsso_notification page failed");
+    @Test(alwaysRun = true, description = "Testing SAML SSO login", groups = "wso2.is",
+            priority = 2)
+    public void testTOTPAuthentication() {
+        try {
+            HttpResponse response;
+            response = sendGetRequest(SAML_SSO_LOGIN_URL);
+            String sessionKey = extractDataFromResponse(response, "name=\"sessionDataKey\"", 1);
+            EntityUtils.consume(response.getEntity());
+            response = sendCredentials(sessionKey);
+            EntityUtils.consume(response.getEntity());
+            String totp = getTOTPFromMessage("http://localhost:9855/getTesting");
+            EntityUtils.consume(response.getEntity());
+            response = sendOTP(sessionKey, totp, "false");
+            EntityUtils.consume(response.getEntity());
+            response = sendRedirectRequest(response);
+            String samlResponse = Utils.extractDataFromResponse(response, "name='SAMLResponse'", 5);
+            samlResponse = new String(Base64.decodeBase64(samlResponse));
+            System.out.println(samlResponse);
+            Assert.assertTrue(samlResponse.contains("<saml2:NameID Format=\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\">testUser</saml2:NameID>"));
 
         } catch (Exception e) {
             Assert.fail("SAML SSO Login test failed.", e);
@@ -218,7 +203,7 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     private Tomcat getTomcat() {
         Tomcat tomcat = new Tomcat();
         tomcat.getService().setContainer(tomcat.getEngine());
-        tomcat.setPort(8490);
+        tomcat.setPort(TOMCAT_PORT);
         tomcat.setBaseDir(".");
 
         StandardHost stdHost = (StandardHost) tomcat.getHost();
@@ -235,10 +220,10 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
 
     private void setSystemProperties() {
         URL resourceUrl = getClass().getResource(File.separator + "keystores" + File.separator
-                                                 + "products" + File.separator + "wso2carbon.jks");
+                + "products" + File.separator + "wso2carbon.jks");
         System.setProperty("javax.net.ssl.trustStore", resourceUrl.getPath());
         System.setProperty("javax.net.ssl.trustStorePassword",
-                           "wso2carbon");
+                "wso2carbon");
         System.setProperty("javax.net.ssl.trustStoreType", "JKS");
     }
 
@@ -259,7 +244,7 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         return value;
     }
 
-    private HttpResponse sendPOSTMessage(String sessionKey) throws Exception {
+    private HttpResponse sendCredentials(String sessionKey) throws Exception {
         HttpPost post = new HttpPost(COMMON_AUTH_URL);
         post.setHeader("User-Agent", USER_AGENT);
         post.addHeader("Referer", ACS_URL);
@@ -269,6 +254,28 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         urlParameters.add(new BasicNameValuePair("sessionDataKey", sessionKey));
         post.setEntity(new UrlEncodedFormEntity(urlParameters));
         return httpClient.execute(post);
+    }
+
+    private HttpResponse sendOTP(String sessionKey, String totp, String resend) throws Exception {
+        HttpPost post = new HttpPost(COMMON_AUTH_URL);
+        post.setHeader("User-Agent", USER_AGENT);
+        post.addHeader("Referer", ACS_URL);
+        List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+        urlParameters.add(new BasicNameValuePair("resendCode", resend));
+        urlParameters.add(new BasicNameValuePair("code", totp));
+        urlParameters.add(new BasicNameValuePair("sessionDataKey", sessionKey));
+        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+        return httpClient.execute(post);
+    }
+
+    private String getTOTPFromMessage(String url) throws Exception {
+        HttpGet request = new HttpGet(url);
+        request.addHeader("User-Agent", USER_AGENT);
+        HttpResponse response = httpClient.execute(request);
+        BufferedReader rd = new BufferedReader(
+                new InputStreamReader(response.getEntity().getContent()));
+        String responseContent = rd.readLine();
+        return responseContent.split("<response>Verification Code: ")[1].split("</response>")[0];
     }
 
     private HttpResponse sendGetRequest(String url) throws Exception {
@@ -294,6 +301,7 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     }
 
     private void createApplication() throws Exception {
+
         serviceProvider = new ServiceProvider();
         serviceProvider.setApplicationName(APPLICATION_NAME);
         serviceProvider.setDescription("This is a test Service Provider");
@@ -327,8 +335,8 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         try {
             // creating the user
             remoteUSMServiceClient.addUser(USERNAME, PASSWORD,
-                                           null, getUserClaims(),
-                                           profileName, true);
+                    null, getUserClaims(),
+                    profileName, true);
         } catch (Exception e) {
             Assert.fail("Error while creating the user", e);
         }
@@ -345,7 +353,7 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
     }
 
     private ClaimValue[] getUserClaims() {
-        ClaimValue[] claimValues = new ClaimValue[3];
+        ClaimValue[] claimValues = new ClaimValue[4];
 
         ClaimValue firstName = new ClaimValue();
         firstName.setClaimURI(firstNameClaimURI);
@@ -362,6 +370,12 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         email.setValue(EMAIL);
         claimValues[2] = email;
 
+        ClaimValue mobile = new ClaimValue();
+        mobile.setClaimURI(mobileClaimURI);
+        mobile.setValue(MOBILE_NO);
+        claimValues[3] = mobile;
+
+
         return claimValues;
     }
 
@@ -373,24 +387,25 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         saml2SSOAuthnConfig.setDisplayName("SMSOTP");
         saml2SSOAuthnConfig.setEnabled(true);
         org.wso2.carbon.identity.application.common.model.idp.xsd.Property[] properties = new org.wso2.carbon
-                .identity.application.common.model.idp.xsd.Property[4];
+                .identity.application.common.model.idp.xsd.Property[5];
 
         org.wso2.carbon.identity.application.common.model.idp.xsd.Property property = new org.wso2.carbon.identity
                 .application.common.model.idp.xsd.Property();
 
         property.setName("sms_url");
-        property.setValue("https://localhost:8080/something");
+        property.setValue("http://localhost:9855/testing?api_key=123456&api_secret=ACCDRT&from=NEXMO&to=$ctx" +
+                ".num&text=$ctx.msg");
         properties[0] = property;
 
         property = new org.wso2.carbon.identity.application.common.model.idp.xsd.Property();
         property.setName("http_method");
-        property.setValue("POST");
+        property.setValue("GET");
         properties[1] = property;
 
 
         property = new org.wso2.carbon.identity.application.common.model.idp.xsd.Property();
         property.setName("headers");
-        property.setValue("HEADERS");
+        property.setValue("X-Version: 1,Authorization: bearer ********,Accept: application/json,Content-Type: application/json");
         properties[2] = property;
 
 
@@ -398,6 +413,12 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         property.setName("payload");
         property.setValue("PAYLOAD");
         properties[3] = property;
+
+        property = new org.wso2.carbon.identity.application.common.model.idp.xsd.Property();
+        property.setName("http_response");
+        property.setValue("200");
+        properties[4] = property;
+
 
         saml2SSOAuthnConfig.setProperties(properties);
 
@@ -414,20 +435,38 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
 
         AuthenticationStep authenticationStep1 = new AuthenticationStep();
 
-        fed[0] = new org.wso2.carbon.identity.application.common.model.xsd.IdentityProvider();
-        fed[0].setDisplayName("SMSOTP");
-        fed[0].setIdentityProviderName("SMSOTP");
-        authenticationStep1.setFederatedIdentityProviders(fed);
+        org.wso2.carbon.identity.application.common.model.xsd.IdentityProvider fedidp = new org.wso2.carbon.identity
+                .application.common.model.xsd.IdentityProvider();
+        fedidp.setDisplayName("SMSOTP");
+        fedidp.setIdentityProviderName("SMSOTP");
 
+        org.wso2.carbon.identity.application.common.model.xsd.FederatedAuthenticatorConfig
+                federatedAuthenticatorConfig = new org.wso2.carbon.identity.application.common.model.xsd.FederatedAuthenticatorConfig();
+        federatedAuthenticatorConfig.setName("SMSOTP");
+        federatedAuthenticatorConfig.setDisplayName("SMSOTP");
+
+        org.wso2.carbon.identity.application.common.model.xsd.FederatedAuthenticatorConfig[]
+                federatedAuthenticatorConfigs = new org.wso2.carbon.identity.application.common.model.xsd.FederatedAuthenticatorConfig[1];
+        federatedAuthenticatorConfigs[0] = federatedAuthenticatorConfig;
+        fedidp.setFederatedAuthenticatorConfigs(federatedAuthenticatorConfigs);
+        fed[0] = fedidp;
+        authenticationStep1.setFederatedIdentityProviders(fed);
+        authenticationStep1.setStepOrder(2);
 
         AuthenticationStep authenticationStep2 = new AuthenticationStep();
+        authenticationStep2.setSubjectStep(true);
+        authenticationStep2.setAttributeStep(true);
         LocalAuthenticatorConfig[] localAuthenticatorConfig = new LocalAuthenticatorConfig[1];
         LocalAuthenticatorConfig localAuthenticatorConfig1 = new LocalAuthenticatorConfig();
-        localAuthenticatorConfig1.setName("basic");
+        localAuthenticatorConfig1.setName("BasicAuthenticator");
         localAuthenticatorConfig1.setDisplayName("basic");
+        localAuthenticatorConfig[0] = localAuthenticatorConfig1;
         authenticationStep2.setLocalAuthenticatorConfigs(localAuthenticatorConfig);
-
-        localAndOutboundAuthenticationConfig.setAuthenticationSteps(new AuthenticationStep[]{authenticationStep1, authenticationStep2});
+        authenticationStep2.setStepOrder(1);
+        localAndOutboundAuthenticationConfig.setAuthenticationType("flow");
+        localAndOutboundAuthenticationConfig.setAuthenticationSteps(new AuthenticationStep[]{authenticationStep2,
+                authenticationStep1});
+        serviceProvider.setLocalAndOutBoundAuthenticationConfig(localAndOutboundAuthenticationConfig);
 
         try {
             applicationManagementServiceClient.updateApplicationData(serviceProvider);
@@ -436,4 +475,37 @@ public class SAMLInvalidIssuerTestCase extends ISIntegrationTest {
         }
 
     }
+
+
+    private SAMLSSOServiceProviderDTO createSsoServiceProviderDTO() {
+        SAMLSSOServiceProviderDTO samlssoServiceProviderDTO = new SAMLSSOServiceProviderDTO();
+        samlssoServiceProviderDTO.setIssuer("travelocity.com");
+        samlssoServiceProviderDTO.setAssertionConsumerUrls(new String[]{"http://localhost:" + TOMCAT_PORT + "/travelocity" +
+                ".com/home" +
+                ".jsp"});
+        samlssoServiceProviderDTO.setDefaultAssertionConsumerUrl("http://localhost:" + TOMCAT_PORT + "/travelocity.com/home.jsp");
+        samlssoServiceProviderDTO.setAttributeConsumingServiceIndex(ATTRIBUTE_CS_INDEX_VALUE);
+        samlssoServiceProviderDTO.setNameIDFormat("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress");
+        samlssoServiceProviderDTO.setDoSignAssertions(true);
+        samlssoServiceProviderDTO.setDoSignResponse(true);
+        samlssoServiceProviderDTO.setDoSingleLogout(true);
+
+        return samlssoServiceProviderDTO;
+    }
+
+    private void changeISConfiguration() throws Exception {
+
+        log.info("Replacing application-authentication.xml setting showAuthFailureReason true");
+
+        String carbonHome = CarbonUtils.getCarbonHome();
+        File applicationXML = new File(carbonHome + File.separator + "repository" + File.separator + "conf" + File
+                .separator + "identity" + File.separator + "application-authentication.xml");
+        File configuredApplicationXML = new File(getISResourceLocation() + File.separator + "saml" + File.separator +
+                "application-authentication_sms_otp_enabled.xml");
+
+        serverConfigurationManager = new ServerConfigurationManager(isServer);
+        serverConfigurationManager.applyConfigurationWithoutRestart(configuredApplicationXML, applicationXML, true);
+        serverConfigurationManager.restartGracefully();
+    }
+
 }
