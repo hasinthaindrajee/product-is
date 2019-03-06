@@ -107,26 +107,6 @@
                             </artifactItems>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy-forgetme-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.wso2.carbon.privacy</groupId>
-                                    <artifactId>org.wso2.carbon.privacy.forgetme.rest</artifactId>
-                                    <version>${forgetme.tool.version}</version>
-                                    <type>war</type>
-                                    <overWrite>true</overWrite>
-                                    <destFileName>forgetme#v1.0.war</destFileName>
-                                    <outputDirectory>target/forget-me-webapp</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -240,8 +220,6 @@
 
                                 <replace file="target/wso2carbon-core-${carbon.kernel.version}/repository/conf/user-mgt.xml" token="&lt;Property name=&quot;isCascadeDeleteEnabled&quot;&gt;true&lt;/Property&gt;" value="&lt;Property name=&quot;isCascadeDeleteEnabled&quot;&gt;true&lt;/Property&gt;${line.separator} &lt;Property name=&quot;initializeNewClaimManager&quot;&gt;true&lt;/Property&gt;" />
 
-                                <replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/identity/sso-idp-config.xml" token="${sso-idp-config-default}" value="${sso-idp-config-replace}" />
-
                                 <replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/authenticators.xml" token="&lt;!--Authenticator name=&quot;MutualSSLAuthenticator&quot; disabled=&quot;false&quot;&gt;" value="&lt;Authenticator name=&quot;MutualSSLAuthenticator&quot;&gt;" />
 
                                 <replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/authenticators.xml" token="&lt;/Authenticator--&gt;" value="&lt;/Authenticator&gt;" />
@@ -250,8 +228,8 @@
                                 <replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/registry.xml" token="&lt;startIndexing&gt;true&lt;/startIndexing&gt;" value="&lt;startIndexing&gt;false&lt;/startIndexing&gt;" />
 
                                 <!-- update ciphertool properties to enable securevault on thrift server keystore password-->
-                                <replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-text.properties" token="Server.Service.Connector.keystorePass=[wso2carbon]" value="Server.Service.Connector.keystorePass=[wso2carbon]${line.separator}ThirftBasedEntitlementConfig.KeyStore.Password=[wso2carbon]" />
-                                <replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-tool.properties" token="Server.Service.Connector.keystorePass=repository/conf/tomcat/catalina-server.xml//Server/Service/Connector[@keystorePass],true" value="Server.Service.Connector.keystorePass=repository/conf/tomcat/catalina-server.xml//Server/Service/Connector[@keystorePass],true${line.separator}ThirftBasedEntitlementConfig.KeyStore.Password=repository/conf/identity/identity.xml//Server/EntitlementSettings/ThirftBasedEntitlementConfig/KeyStore/Password,true" />
+                                <!--<replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-text.properties" token="Server.Service.Connector.keystorePass=[wso2carbon]" value="Server.Service.Connector.keystorePass=[wso2carbon]${line.separator}ThirftBasedEntitlementConfig.KeyStore.Password=[wso2carbon]" />-->
+                                <!--<replace file="../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-tool.properties" token="Server.Service.Connector.keystorePass=repository/conf/tomcat/catalina-server.xml//Server/Service/Connector[@keystorePass],true" value="Server.Service.Connector.keystorePass=repository/conf/tomcat/catalina-server.xml//Server/Service/Connector[@keystorePass],true${line.separator}ThirftBasedEntitlementConfig.KeyStore.Password=repository/conf/identity/identity.xml//Server/EntitlementSettings/ThirftBasedEntitlementConfig/KeyStore/Password,true" />-->
 
                                 <!-- Update the README.txt inside the bin folder about forgetme execution scripts. -->
                                 <replace file="target/wso2carbon-core-${carbon.kernel.version}/bin/README.txt" token="10. carbondump.sh &amp; carbondump.bat - Carbondump is a tool for collecting all the necessary data from a running Carbon instance at the time of an error. The carbondump generates a zip archive with the collected data, which can be used to analyze your system and determine the problem which caused the error." value="10. carbondump.sh &amp; carbondump.bat - Carbondump is a tool for collecting all the necessary data from a running Carbon instance at the time of an error. The carbondump generates a zip archive with the collected data, which can be used to analyze your system and determine the problem which caused the error.${line.separator}${line.separator}11. forgetme.sh &amp; forgetme.bat - Forgetme is a tool to anonymize deleted user information from metadata tables and log files. This tool will replace the given user name with a given or random pseudonym.${line.separator}" />
@@ -297,10 +275,6 @@
                                     </fileset>
                                 </copy>
 
-                                <copy todir="target/wso2carbon-core-${carbon.kernel.version}/dbscripts/identity/uma" overwrite="false">
-                                    <fileset dir="${basedir}/../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/dbscripts/identity/uma/">
-                                    </fileset>
-                                </copy>
 
                                 <path id="h2.classpath">
                                     <path refid="maven.compile.classpath" />
@@ -321,15 +295,6 @@
                                     <fileset file="target/wso2carbon-core-${carbon.kernel.version}/dbscripts/consent/h2.sql" />
                                 </sql>
                                 <echo message="##################### END ########################" />
-                                <echo message="########### Create UMA Database ##############" />
-                                <sql driver="org.h2.Driver" url="jdbc:h2:${basedir}/target/wso2carbon-core-${carbon.kernel.version}/repository/database/WSO2CARBON_DB" userid="wso2carbon" password="wso2carbon" autocommit="true" onerror="continue">
-                                    <classpath>
-                                        <path refid="h2.classpath" />
-                                    </classpath>
-                                    <fileset file="target/wso2carbon-core-${carbon.kernel.version}/dbscripts/identity/uma/h2.sql" />
-                                </sql>
-                                <echo message="##################### END ########################" />
-
                                 <delete file="target/wso2is-${project.version}.zip" />
                                 <delete dir="${tempdir}" />
                                 <mkdir dir="${tempdir}" />

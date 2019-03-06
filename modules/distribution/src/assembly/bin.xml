@@ -174,17 +174,6 @@
             </outputDirectory>
         </fileSet>
 
-        <!--copy jaxrs web app for SCIM feature-->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>wso2.war</include>
-            </includes>
-        </fileSet>
-
         <!--copy jaxrs web app for SCIM2 feature-->
         <fileSet>
             <directory>
@@ -224,29 +213,6 @@
                 <include>api#identity#oauth2#dcr#v1.1.war</include>
             </includes>
         </fileSet>
-        <!--copy jaxrs web app for Template Management feature-->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#template#mgt#v1.0.0.war</include>
-            </includes>
-        </fileSet>
-
-
-        <!--copy jaxrs web app for Mex feature-->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>mexut.war</include>
-            </includes>
-        </fileSet>
-
         <!--copy web app for application authentication feature -->
         <fileSet>
             <directory>
@@ -255,61 +221,6 @@
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
             <includes>
                 <include>authenticationendpoint.war</include>
-            </includes>
-        </fileSet>
-
-        <!--copy web app for entitlement endpoint feature -->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#entitlement.war</include>
-            </includes>
-        </fileSet>
-
-        <!--copy jaxrs web app for consent management feature-->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#consent-mgt#v1.0.war</include>
-            </includes>
-        </fileSet>
-
-
-        <!--copy  web app for UMA 2.0 permission endpoint feature-->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#oauth2#uma#permission#v1.0.war</include>
-            </includes>
-        </fileSet>
-
-        <!--copy  web app for UMA 2.0 resource endpoint feature-->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#oauth2#uma#resourceregistration#v1.0.war</include>
-            </includes>
-        </fileSet>
-
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#health-check#v1.0.war</include>
             </includes>
         </fileSet>
 
@@ -354,52 +265,6 @@
         <fileSet>
             <directory>../connectors/target/authenticatorCopied/war</directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-        </fileSet>
-
-        <!--copy web app for identity management feature -->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>accountrecoveryendpoint.war</include>
-            </includes>
-        </fileSet>
-
-
-        <!--copy web app for identity recovery feature -->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#recovery#v0.9.war</include>
-            </includes>
-        </fileSet>
-
-        <!--copy web app for identity recovery feature -->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/webapps</outputDirectory>
-            <includes>
-                <include>api#identity#user#v1.0.war</include>
-            </includes>
-        </fileSet>
-
-        <!--copy shindig war  -->
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps
-            </directory>
-            <outputDirectory>wso2is-${pom.version}/repository/deployment/server/webapps
-            </outputDirectory>
-            <includes>
-                <include>shindig.war</include>
-            </includes>
         </fileSet>
 
         <!--Multitenancy related file -->
@@ -468,10 +333,6 @@
         </fileSet>
 
         <fileSet>
-            <directory>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/dbscripts/bps</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/dbscripts/bps</outputDirectory>
-        </fileSet>
-        <fileSet>
             <directory>
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/dbscripts/metrics/
             </directory>
@@ -523,18 +384,6 @@
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/dbscripts/consent/
             </directory>
             <outputDirectory>wso2is-${pom.version}/dbscripts/consent</outputDirectory>
-            <includes>
-                <include>**/*.sql</include>
-            </includes>
-            <fileMode>644</fileMode>
-            <directoryMode>775</directoryMode>
-        </fileSet>
-
-        <fileSet>
-            <directory>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/dbscripts/identity/uma/
-            </directory>
-            <outputDirectory>wso2is-${pom.version}/dbscripts/identity/uma</outputDirectory>
             <includes>
                 <include>**/*.sql</include>
             </includes>
@@ -756,13 +605,6 @@
         </file>
         <file>
             <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/identity/entitlement.properties
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/identity</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
                 ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/resources/identity/pages/samlsso_response.html
             </source>
             <outputDirectory>wso2is-${pom.version}/repository/resources/identity/pages</outputDirectory>
@@ -774,55 +616,41 @@
             <destName>samlsso_federate.html</destName>
             <filtered>true</filtered>
         </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/resources/identity/pages/sts_response.html
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/resources/identity/pages</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/bin/ciphertool.bat
-            </source>
-            <outputDirectory>wso2is-${pom.version}/bin</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/bin/ciphertool.sh
-            </source>
-            <outputDirectory>wso2is-${pom.version}/bin</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-text.properties
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-tool.properties
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/balana-config.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/lib/org.wso2.ciphertool-${cipher-tool.version}.jar
-            </source>
-            <outputDirectory>wso2is-${pom.version}/lib</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
+        <!--<file>-->
+            <!--<source>-->
+                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/bin/ciphertool.bat-->
+            <!--</source>-->
+            <!--<outputDirectory>wso2is-${pom.version}/bin</outputDirectory>-->
+            <!--<fileMode>644</fileMode>-->
+        <!--</file>-->
+        <!--<file>-->
+            <!--<source>-->
+                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/bin/ciphertool.sh-->
+            <!--</source>-->
+            <!--<outputDirectory>wso2is-${pom.version}/bin</outputDirectory>-->
+            <!--<fileMode>644</fileMode>-->
+        <!--</file>-->
+        <!--<file>-->
+            <!--<source>-->
+                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-text.properties-->
+            <!--</source>-->
+            <!--<outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>-->
+            <!--<fileMode>644</fileMode>-->
+        <!--</file>-->
+        <!--<file>-->
+            <!--<source>-->
+                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/cipher-tool.properties-->
+            <!--</source>-->
+            <!--<outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>-->
+            <!--<fileMode>644</fileMode>-->
+        <!--</file>-->
+        <!--<file>-->
+            <!--<source>-->
+                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/lib/org.wso2.ciphertool-${cipher-tool.version}.jar-->
+            <!--</source>-->
+            <!--<outputDirectory>wso2is-${pom.version}/lib</outputDirectory>-->
+            <!--<fileMode>644</fileMode>-->
+        <!--</file>-->
         <file>
             <source>src/repository/resources/conf/secret-conf.properties</source>
             <outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>
@@ -926,59 +754,12 @@
             </source>
             <outputDirectory>wso2is-${pom.version}/repository/conf/identity</outputDirectory>
         </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/identity/sso-idp-config.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/identity</outputDirectory>
-        </file>
-        <file>
-            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/database/jpadb.h2.db
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/database/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/datasources/bps-datasources.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/datasources/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/b4p-coordination-config.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-
-        <file>
-            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/humantask.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
 	<file>
             <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/output-event-adapters.xml
             </source>
             <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
             <fileMode>644</fileMode>
         </file>
-	<file>
-            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/attachment-management.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <!-- This is temporary replace bps.xml file (that is copied by feature) by local copy of the file until BPS team fix and release one of issue with bps.xml -->
-        <file>
-            <source>
-                conf/bps/bps.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
-        </file>
-
         <file>
             <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/metrics.properties</source>
             <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
@@ -1007,11 +788,6 @@
             <fileMode>644</fileMode>
         </file>
         <file>
-            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/webapps/mex/metadata.xml</source>
-            <outputDirectory>wso2is-${pom.version}/repository/deployment/server/webapps/mex/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
             <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/consent-mgt-config.xml</source>
             <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
             <fileMode>644</fileMode>
@@ -1036,33 +812,6 @@
             <outputDirectory>wso2is-${pom.version}/repository/components/tools/forget-me/bin/</outputDirectory>
             <fileMode>744</fileMode>
         </file>
-        <file>
-            <source>target/forget-me/identity-anonymization-tool-${forgetme.tool.version}/conf/product-config/config-identity.json</source>
-            <outputDirectory>wso2is-${pom.version}/repository/components/tools/forget-me/conf/</outputDirectory>
-            <destName>config.json</destName>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/resources/identity/policies/xacml/default/scope_based_token_validation_policy_template.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/resources/identity/policies/xacml/default
-            </outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/security/certificate-validation.xml
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/security</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
-            <source>../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/health-check-config.xml</source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-
         <!--In-Place Updates-->
         <file>
             <source>updates/product.txt</source>
