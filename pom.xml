@@ -33,11 +33,11 @@
     <url>http://wso2.org/projects/identity</url>
 
     <modules>
-        <module>modules/features</module>
+        <!--<module>modules/features</module>-->
         <module>modules/p2-profile-gen</module>
         <module>modules/local-authenticators</module>
         <module>modules/distribution</module>
-        <module>modules/styles</module>
+        <!--<module>modules/styles</module>-->
     </modules>
 
     <licenses>
