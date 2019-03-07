@@ -110,9 +110,6 @@
                                     org.wso2.carbon.commons:org.wso2.carbon.logging.mgt.feature:${carbon.commons.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.commons:org.wso2.carbon.system.statistics.feature:${carbon.commons.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.security.mgt.feature:${carbon.identity.framework.version}
                                 </featureArtifactDef>
                                 <!-- registry related features -->
@@ -153,12 +150,6 @@
                                 </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.identity.template.mgt.feature:${carbon.identity.framework.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.governance:org.wso2.carbon.identity.governance.feature:${identity.governance.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.event.handler.accountlock:org.wso2.carbon.identity.handler.event.account.lock.feature:${identity.event.handler.account.lock.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.event.handler.notification:org.wso2.carbon.email.mgt.feature:${identity.event.handler.notification.version}
@@ -233,10 +224,6 @@
                                 <featureArtifactDef>
                                     org.wso2.carbon.commons:org.wso2.carbon.event.server.feature:${carbon.commons.version}
                                 </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.commons:org.wso2.carbon.deployment.synchronizer.feature:${carbon.commons.version}
-                                </featureArtifactDef>
-
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.identity.notification.mgt.feature:${carbon.identity.framework.version}
                                 </featureArtifactDef>
@@ -352,14 +339,6 @@
                                     <version>${carbon.identity.framework.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.carbon.identity.governance.feature.group</id>
-                                    <version>${identity.governance.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.handler.event.account.lock.feature.group</id>
-                                    <version>${identity.event.handler.account.lock.version}</version>
-                                </feature>
-                                <feature>
                                     <id>org.wso2.carbon.identity.mgt.feature.group</id>
                                     <version>${carbon.identity.framework.version}</version>
                                 </feature>
@@ -440,11 +419,6 @@
                                     <id>org.wso2.carbon.event.server.feature.group</id>
                                     <version>${carbon.commons.version}</version>
                                 </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.deployment.synchronizer.feature.group</id>
-                                    <version>${carbon.commons.version}</version>
-                                </feature>
-
                                 <feature>
                                     <id>
                                         org.wso2.carbon.identity.application.authentication.framework.server.feature.group
@@ -575,11 +549,6 @@
                                     <id>org.wso2.carbon.ldap.server.feature.group</id>
                                     <version>${identity.userstore.ldap.version}</version>
                                 </feature>
-
-                                <feature>
-                                    <id>org.wso2.carbon.system.statistics.feature.group</id>
-                                    <version>${carbon.commons.version}</version>
-                                </feature>
                                 <feature>
                                     <id>org.wso2.carbon.security.mgt.feature.group</id>
                                     <version>${carbon.identity.framework.version}</version>
@@ -619,14 +588,6 @@
                                 <feature>
                                     <id>org.wso2.carbon.identity.mgt.feature.group</id>
                                     <version>${carbon.identity.framework.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.governance.feature.group</id>
-                                    <version>${identity.governance.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.handler.event.account.lock.feature.group</id>
-                                    <version>${identity.event.handler.account.lock.version}</version>
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.email.mgt.feature.group</id>
@@ -701,11 +662,6 @@
                                     <id>org.wso2.carbon.event.server.feature.group</id>
                                     <version>${carbon.commons.version}</version>
                                 </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.deployment.synchronizer.feature.group</id>
-                                    <version>${carbon.commons.version}</version>
-                                </feature>
-
                                 <feature>
                                     <id>
                                         org.wso2.carbon.identity.application.authentication.framework.server.feature.group
