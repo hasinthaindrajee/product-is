@@ -483,13 +483,6 @@
             <fileMode>644</fileMode>
         </file>
         <file>
-            <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/conf/identity/identity-mgt.properties
-            </source>
-            <outputDirectory>wso2is-${pom.version}/repository/conf/identity</outputDirectory>
-            <fileMode>644</fileMode>
-        </file>
-        <file>
             <source>src/repository/resources/pages/samlsso_federate.html</source>
             <outputDirectory>wso2is-${pom.version}/repository/resources/identity/pages</outputDirectory>
             <destName>samlsso_federate.html</destName>
