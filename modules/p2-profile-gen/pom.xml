@@ -188,12 +188,6 @@
                                     org.wso2.carbon.identity.inbound.auth.saml2:org.wso2.carbon.identity.sso.saml.feature:${identity.inbound.auth.saml.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.identity.metadata.saml2:org.wso2.carbon.identity.idp.metadata.saml2.server.feature:${identity.metadata.saml.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.metadata.saml2:org.wso2.carbon.identity.sp.metadata.saml2.server.feature:${identity.metadata.saml.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.identity.application.mgt.feature:${carbon.identity.framework.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
@@ -242,13 +236,6 @@
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.userstore.ldap:org.wso2.carbon.ldap.server.feature:${identity.userstore.ldap.version}
                                 </featureArtifactDef>
-
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.inbound.provisioning.scim:org.wso2.carbon.identity.scim.feature:${identity.inbound.provisioning.scim.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.inbound.provisioning.scim2:org.wso2.carbon.identity.scim2.server.feature:${identity.inbound.provisioning.scim2.version}
-                                </featureArtifactDef>
                                 <!-- Features related to Cloud Identity -->
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.user.mgt.feature:${carbon.identity.framework.version}
@@ -277,12 +264,6 @@
                                     org.wso2.carbon.commons:org.wso2.carbon.deployment.synchronizer.feature:${carbon.commons.version}
                                 </featureArtifactDef>
 
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.metadata.saml2:org.wso2.carbon.identity.idp.metadata.saml2.server.feature:${identity.metadata.saml.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.metadata.saml2:org.wso2.carbon.identity.sp.metadata.saml2.server.feature:${identity.metadata.saml.version}
-                                </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.identity.notification.mgt.feature:${carbon.identity.framework.version}
                                 </featureArtifactDef>
@@ -318,10 +299,6 @@
                                 <featureArtifactDef>
                                     org.wso2.carbon.deployment:org.wso2.carbon.module.mgt.feature:${carbon.deployment.version}
                                 </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.metrics:org.wso2.carbon.metrics.feature:${carbon.metrics.version}
-                                </featureArtifactDef>
-
                                 <!--Auth/Authz for Rest API-->
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.auth.rest:org.wso2.carbon.identity.auth.server.feature:${carbon.identity.auth.version}
@@ -460,18 +437,6 @@
                                     <version>${carbon.identity.framework.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.carbon.identity.sso.saml.feature.group</id>
-                                    <version>${identity.inbound.auth.saml.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.idp.metadata.saml2.server.feature.group</id>
-                                    <version>${identity.metadata.saml.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.sp.metadata.saml2.server.feature.group</id>
-                                    <version>${identity.metadata.saml.version}</version>
-                                </feature>
-                                <feature>
                                     <id>org.wso2.carbon.identity.application.mgt.feature.group</id>
                                     <version>${carbon.identity.framework.version}</version>
                                 </feature>
@@ -514,14 +479,6 @@
                                 <feature>
                                     <id>org.wso2.carbon.identity.authenticator.iwa.feature.group</id>
                                     <version>${identity.carbon.auth.iwa.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.scim.feature.group</id>
-                                    <version>${identity.inbound.provisioning.scim.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.scim2.server.feature.group</id>
-                                    <version>${identity.inbound.provisioning.scim2.version}</version>
                                 </feature>
                                 <!-- Features required for Cloud Identity -->
                                 <feature>
@@ -599,11 +556,6 @@
                                     <id>org.wso2.carbon.module.mgt.server.feature.group</id>
                                     <version>${carbon.deployment.version}</version>
                                 </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.metrics.feature.group</id>
-                                    <version>${carbon.metrics.version}</version>
-                                </feature>
-
                                 <!-- Auth/Authz for Rest API  -->
                                 <feature>
                                     <id>org.wso2.carbon.identity.auth.server.feature.group</id>
@@ -806,18 +758,6 @@
                                     <version>${carbon.identity.framework.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.carbon.identity.sso.saml.feature.group</id>
-                                    <version>${identity.inbound.auth.saml.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.idp.metadata.saml2.server.feature.group</id>
-                                    <version>${identity.metadata.saml.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.sp.metadata.saml2.server.feature.group</id>
-                                    <version>${identity.metadata.saml.version}</version>
-                                </feature>
-                                <feature>
                                     <id>org.wso2.carbon.identity.application.mgt.feature.group</id>
                                     <version>${carbon.identity.framework.version}</version>
                                 </feature>
@@ -856,14 +796,6 @@
                                 <feature>
                                     <id>org.wso2.carbon.identity.authenticator.iwa.feature.group</id>
                                     <version>${identity.carbon.auth.iwa.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.scim.feature.group</id>
-                                    <version>${identity.inbound.provisioning.scim.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.scim2.server.feature.group</id>
-                                    <version>${identity.inbound.provisioning.scim2.version}</version>
                                 </feature>
                                 <!-- Features required for Cloud Identity -->
                                 <feature>
@@ -916,10 +848,6 @@
                                 <feature>
                                     <id>org.wso2.carbon.identity.user.account.association.feature.group</id>
                                     <version>${identity.user.account.association.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.metrics.feature.group</id>
-                                    <version>${carbon.metrics.version}</version>
                                 </feature>
 
                                 <!-- Auth/Authz for Rest API  -->
