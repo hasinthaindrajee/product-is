@@ -79,24 +79,6 @@
         </fileSet>
 
         <fileSet>
-            <directory>../jaggery-apps/user-dashboard/dashboard</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/dashboard
-            </outputDirectory>
-            <includes>
-                <include>**/**</include>
-            </includes>
-        </fileSet>
-
-        <fileSet>
-            <directory>../jaggery-apps/portal</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal
-            </outputDirectory>
-            <includes>
-                <include>**/**</include>
-            </includes>
-        </fileSet>
-
-        <fileSet>
             <directory>target/wso2carbon-core-${carbon.kernel.version}/dbscripts</directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/dbscripts</outputDirectory>
             <excludes>
@@ -204,42 +186,12 @@
             </includes>
         </fileSet>
 
-        <!--copy the oauth2 grant type extensions -->
-        <fileSet>
-            <directory>../oauth2-grant-types/target/oauth2GrantCopied/jar</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/components/dropins</outputDirectory>
-        </fileSet>
-
-
-        <!--copy the social authenticator jars Facebook,Google,Windows-Live,Yahoo.-->
-        <fileSet>
-            <directory>../social-authenticators/target/socialauthenticatorCopied/jar</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/components/dropins</outputDirectory>
-        </fileSet>
-
-        <!--Copy the outbound authenticator jars OIDC, Passive-STS.-->
-        <fileSet>
-            <directory>../authenticators/target/authenticatoroutboundCopied/jar</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/components/dropins</outputDirectory>
-        </fileSet>
-
-        <!--copy provisioning-connector jars SPML,Google,Salesforce,SCIM .-->
-        <fileSet>
-            <directory>../provisioning-connectors/target/provisioningconnectorCopied/jar</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/components/dropins</outputDirectory>
-        </fileSet>
-
         <!--copy local-authenticator jars BaiscAuth,IWA,FIDO .-->
         <fileSet>
             <directory>../local-authenticators/target/localauthenticatorCopied/jar</directory>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/components/dropins</outputDirectory>
         </fileSet>
 
-        <!--copy the authentication jars for totp, x509, emailotp, smsotp, office365 and twitter authenticators-->
-        <fileSet>
-            <directory>../connectors/target/authenticatorCopied/jar</directory>
-            <outputDirectory>${pom.artifactId}-${pom.version}/repository/components/dropins</outputDirectory>
-        </fileSet>
 
         <!--Multitenancy related file -->
         <fileSet>
