@@ -211,9 +211,6 @@
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.framework:org.wso2.carbon.identity.thrift.authentication.feature:${carbon.identity.framework.version}
                                 </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.carbon.auth.mutualssl:org.wso2.carbon.identity.authenticator.mutualssl.feature:${identity.carbon.auth.mutual.ssl.version}
-                                </featureArtifactDef>
 
                                 <featureArtifactDef>
                                     org.wso2.carbon.identity.user.ws:org.wso2.carbon.um.ws.service.feature:${identity.user.ws.version}
@@ -270,22 +267,12 @@
                                 <featureArtifactDef>
                                     org.apache.axis2.transport:org.apache.axis2.transport.mail.feature:${axis2-transports.version}
                                 </featureArtifactDef>
-                                <!-- User Account Association Feature -->
-                                <featureArtifactDef>
-                                    org.wso2.carbon.identity.association.account:org.wso2.carbon.identity.user.account.association.feature:${identity.user.account.association.version}
-                                </featureArtifactDef>
                                 <!-- Cipher tool feature -->
                                 <featureArtifactDef>
                                     org.wso2.ciphertool:org.wso2.ciphertool.feature:${cipher-tool.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.attachment.mgt.feature:${carbon.business-process.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
                                     org.wso2.carbon.deployment:org.wso2.carbon.service.mgt.feature:${carbon.deployment.version}
-                                </featureArtifactDef>
-                                <featureArtifactDef>
-                                    org.wso2.carbon.business-process:org.wso2.carbon.unifiedendpoint.server.feature:${carbon.business-process.version}
                                 </featureArtifactDef>
                                 <featureArtifactDef>
                                     org.wso2.carbon.analytics-common:org.wso2.carbon.event.output.adapter.server.feature:${carbon.analytics-common.version}
@@ -453,10 +440,6 @@
                                     <version>${identity.carbon.auth.saml2.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.carbon.identity.authenticator.mutualssl.feature.group</id>
-                                    <version>${identity.carbon.auth.mutual.ssl.version}</version>
-                                </feature>
-                                <feature>
                                     <id>org.wso2.carbon.um.ws.service.feature.group</id>
                                     <version>${identity.user.ws.version}</version>
                                 </feature>
@@ -529,16 +512,8 @@
                                     <version>${axis2-transports.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.carbon.identity.user.account.association.feature.group</id>
-                                    <version>${identity.user.account.association.version}</version>
-                                </feature>
-                                <feature>
                                     <id>org.wso2.carbon.service.mgt.server.feature.group</id>
                                     <version>${carbon.deployment.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.unifiedendpoint.server.feature.group</id>
-                                    <version>${carbon.business-process.version}</version>
                                 </feature>
                                 <feature>
                                     <id>org.wso2.carbon.event.output.adapter.server.feature.group</id>
@@ -770,10 +745,6 @@
                                     <version>${identity.carbon.auth.saml2.version}</version>
                                 </feature>
                                 <feature>
-                                    <id>org.wso2.carbon.identity.authenticator.mutualssl.feature.group</id>
-                                    <version>${identity.carbon.auth.mutual.ssl.version}</version>
-                                </feature>
-                                <feature>
                                     <id>org.wso2.carbon.um.ws.service.feature.group</id>
                                     <version>${identity.user.ws.version}</version>
                                 </feature>
@@ -844,10 +815,6 @@
                                 <feature>
                                     <id>org.apache.axis2.transport.mail.feature.group</id>
                                     <version>${axis2-transports.version}</version>
-                                </feature>
-                                <feature>
-                                    <id>org.wso2.carbon.identity.user.account.association.feature.group</id>
-                                    <version>${identity.user.account.association.version}</version>
                                 </feature>
 
                                 <!-- Auth/Authz for Rest API  -->
